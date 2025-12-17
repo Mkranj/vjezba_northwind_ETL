@@ -18,5 +18,10 @@ sleep 20
 	-C \
     -i /opt/sql/instnwnd.sql
 
+# Signal readiness
+touch /var/opt/mssql/.initialized
+
+echo "Initialization complete"
+
 # Bring SQL Server back to foreground
 wait

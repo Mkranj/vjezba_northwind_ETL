@@ -8,6 +8,7 @@ ENV SA_PASSWORD=Vjezbe123!
 USER root
 
 COPY ./northwind-pubs /opt/sql/
+COPY ./init-northwind.sql /opt/sql/init-northwind.sql
 COPY ./entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
