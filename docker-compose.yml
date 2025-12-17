@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    build: ./sqlserver
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Vjezbe123!
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: [
+        "CMD",
+        "/opt/mssql-tools18/bin/sqlcmd",
+        "-S", "localhost",
+        "-U", "sa",
+        "-P", "Vjezbe123!",
+        "-C",
+        "-Q", "SELECT 1"
+      ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  etl:
+    build: ./etl
+    depends_on:
+      sqlserver:
+        condition: service_healthy
