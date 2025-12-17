@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   sqlserver:
-    build: ./sqlserver
+    build: ./sql_server
     container_name: sqlserver
     environment:
       ACCEPT_EULA: Y
