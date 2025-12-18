@@ -15,6 +15,8 @@ CREATE TABLE dDatum (
     dobaGodine SMALLINT
 );
 
+/*Kao početni datum uzimamo najraniji datum iz Orders, Orderdate*/
+
 DECLARE @StartDate date = (SELECT CAST((MIN(OrderDate)) AS DATE)
                             FROM northwind.dbo.Orders);
 DECLARE @EndDate date = GETDATE();
@@ -31,17 +33,9 @@ src AS (
     SELECT
     TheDate         = CONVERT(date, d),
     TheDay          = DATEPART(DAY,       d),
-    TheDayName      = DATENAME(WEEKDAY,   d),
-    TheWeek         = DATEPART(WEEK,      d),
-    TheISOWeek      = DATEPART(ISO_WEEK,  d),
     TheDayOfWeek    = DATEPART(WEEKDAY,   d),
     TheMonth        = DATEPART(MONTH,     d),
-    TheMonthName    = DATENAME(MONTH,     d),
-    TheQuarter      = DATEPART(Quarter,   d),
-    TheYear         = DATEPART(YEAR,      d),
-    TheFirstOfMonth = DATEFROMPARTS(YEAR(d), MONTH(d), 1),
-    TheLastOfYear   = DATEFROMPARTS(YEAR(d), 12, 31),
-    TheDayOfYear    = DATEPART(DAYOFYEAR, d)
+    TheYear         = DATEPART(YEAR,      d)
     FROM d
 ),
 dim AS
@@ -81,4 +75,5 @@ SELECT
     vikend,
     dobaGodine
 FROM dim
+-- za CTE koji se izvršavaju kao petlja makni ograničenje broja ponavljanja
 OPTION (MAXRECURSION 0);
