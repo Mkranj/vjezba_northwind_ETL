@@ -1,29 +1,56 @@
 import pyodbc
 import os
+from pathlib import Path
 
-conn = pyodbc.connect(
+conn_master = pyodbc.connect(
     "DRIVER={ODBC Driver 18 for SQL Server};"
     "SERVER=sqlserver;"
     "DATABASE=master;"
     "UID=sa;"
     "PWD=" + os.environ.get("SA_PASSWORD") + ";"
     "Encrypt=yes;"
-    "TrustServerCertificate=yes;"
+    "TrustServerCertificate=yes;",
+    # without autocommit everything is immediately a transaction, which
+    # prevents us from creating databases
+    autocommit=True
 )
 
-cursor = conn.cursor()
-# We are not guaranteed to run ETL AFTER the db is created.
-# So we connect to master db first,
-# and then wait for Northwind
-cursor.execute("USE Northwind")
+def readSQLFile(filepath: Path) -> str:
+    with open(filepath, "r") as file:
+        content = file.readlines()
 
-# Example ETL: add a row
-cursor.execute("""
-INSERT INTO Customers (CustomerID, CompanyName)
-VALUES ('ZZZZZ', 'ETL Insert Test')
-""")
+    content = "\n".join(content)
+    return(content)
 
-conn.commit()
-conn.close()
+# kreiranje i korištenje baze trebalo bi uvijek biti zaseban execute statement
+
+with conn_master.cursor() as cursor:
+    cursor.execute("CREATE DATABASE nw_skladiste;")
+
+conn_master.close()
+
+# umjesto korištenja USE DB, bolje napraviti konekciju direktno na taj DB pa iz nje raditi kursore
+
+conn_nws = pyodbc.connect(
+    "DRIVER={ODBC Driver 18 for SQL Server};"
+    "SERVER=sqlserver;"
+    "DATABASE=nw_skladiste;"
+    "UID=sa;"
+    "PWD=" + os.environ.get("SA_PASSWORD") + ";"
+    "Encrypt=yes;"
+    "TrustServerCertificate=yes;",
+    # without autocommit everything is immediately a transaction, which
+    # prevents us from creating databases
+    autocommit=True
+)
+
+create_ddatum_sql = readSQLFile(Path("SQL/01_create_dDatum.sql"))
+
+with conn_nws.cursor() as cursor:
+    cursor.execute(create_ddatum_sql)
+conn_nws.commit()
+
+
+conn_nws.close()
 
 print("ETL complete")

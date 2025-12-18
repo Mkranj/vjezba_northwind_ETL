@@ -25,6 +25,7 @@ RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+COPY SQL/ SQL/
 COPY etl.py .
 
 CMD ["python", "etl.py"]
