@@ -25,7 +25,10 @@ def readSQLFile(filepath: Path) -> str:
 # kreiranje i korištenje baze trebalo bi uvijek biti zaseban execute statement
 
 with conn_master.cursor() as cursor:
-    cursor.execute("CREATE DATABASE nw_skladiste;")
+    cursor.execute("CREATE DATABASE nw_skladiste_staging;")
+
+# Na kraju, ako sve prođe okej, kopirati staging u actual bazu.
+# U pravom procesu ovo bi zamijenilo trenutno aktivnu.
 
 conn_master.close()
 
@@ -34,7 +37,7 @@ conn_master.close()
 conn_nws = pyodbc.connect(
     "DRIVER={ODBC Driver 18 for SQL Server};"
     "SERVER=sqlserver;"
-    "DATABASE=nw_skladiste;"
+    "DATABASE=nw_skladiste_staging;"
     "UID=sa;"
     "PWD=" + os.environ.get("SA_PASSWORD") + ";"
     "Encrypt=yes;"
