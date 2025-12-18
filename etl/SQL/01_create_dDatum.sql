@@ -55,7 +55,20 @@ dim AS
     CASE WHEN TheDayOfWeek IN (6, 7) 
         THEN 1 ELSE 0 END
         AS vikend,
-    NULL AS dobaGodine
+    CASE WHEN
+        TheDate BETWEEN DATEFROMPARTS (DATEPART(YEAR, TheDate), 3, 21)  
+                AND DATEFROMPARTS (DATEPART(YEAR, TheDate), 6, 20)
+        THEN 0
+        WHEN 
+        TheDate BETWEEN DATEFROMPARTS (DATEPART(YEAR, TheDate), 6, 21)  
+                AND DATEFROMPARTS (DATEPART(YEAR, TheDate), 9, 22)
+        THEN 1
+        WHEN 
+        TheDate BETWEEN DATEFROMPARTS (DATEPART(YEAR, TheDate), 9, 23)  
+                AND DATEFROMPARTS (DATEPART(YEAR, TheDate), 12, 20)
+        THEN 2
+        ELSE 3 END
+    AS dobaGodine
   FROM src
 )
 INSERT INTO dDatum
