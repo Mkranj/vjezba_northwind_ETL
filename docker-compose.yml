@@ -1,12 +1,10 @@
-version: "3.9"
-
 services:
   sqlserver:
     build: ./sql_server
     container_name: sqlserver
     environment:
       ACCEPT_EULA: Y
-      SA_PASSWORD: Vjezbe123!
+      SA_PASSWORD: CHANGEpass1!
     ports:
       - "1433:1433"
     healthcheck:
@@ -17,6 +15,11 @@ services:
 
   etl:
     build: ./etl
+    environment:
+      SA_PASSWORD: CHANGEpass1!
     depends_on:
       sqlserver:
         condition: service_healthy
+    volumes:
+        - ./etl/data:/data
+        

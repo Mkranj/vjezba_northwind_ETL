@@ -1,11 +1,13 @@
 import pyodbc
+import os
 
 conn = pyodbc.connect(
     "DRIVER={ODBC Driver 18 for SQL Server};"
     "SERVER=sqlserver;"
     "DATABASE=master;"
     "UID=sa;"
-    "PWD=Vjezbe123!;"
+    "PWD=" + os.environ.get("SA_PASSWORD") + ";"
+    "Encrypt=yes;"
     "TrustServerCertificate=yes;"
 )
 
