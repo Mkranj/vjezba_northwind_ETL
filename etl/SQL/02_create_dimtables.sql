@@ -36,6 +36,10 @@ WITH mjesta AS (
     SELECT DISTINCT
         City, Country
     FROM northwind.dbo.Employees
+    UNION
+    SELECT DISTINCT
+        City, Country
+    FROM northwind.dbo.Suppliers
 )
 INSERT INTO dMjesto (imeGrad, imeDrzava)
 SELECT City, Country
