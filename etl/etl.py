@@ -48,6 +48,7 @@ conn_nws = pyodbc.connect(
 )
 
 # Kreiranje dimenzijskih tablica ----
+print("Kreiranje dimenzijskih tablica - dDatum")
 
 create_ddatum_sql = readSQLFile(Path("SQL/01_create_dDatum.sql"))
 
@@ -56,6 +57,7 @@ with conn_nws.cursor() as cursor:
 conn_nws.commit()
 
 
+print("Kreiranje ostalih dimenzijskih tablica")
 create_dim_sql = readSQLFile(Path("SQL/02_create_dimtables.sql"))
 
 with conn_nws.cursor() as cursor:
@@ -65,6 +67,7 @@ conn_nws.commit()
 # Kreiranje i punjenje činjenične tablice ----
 
 
+print("Kreiranje fProdajaProizvod")
 create_fact_sql = readSQLFile(Path("SQL/03_create_fProdajaProizvod.sql"))
 
 with conn_nws.cursor() as cursor:
