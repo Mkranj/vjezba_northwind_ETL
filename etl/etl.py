@@ -47,12 +47,20 @@ conn_nws = pyodbc.connect(
     autocommit=True
 )
 
+# Kreiranje dimenzijskih tablica ----
+
 create_ddatum_sql = readSQLFile(Path("SQL/01_create_dDatum.sql"))
 
 with conn_nws.cursor() as cursor:
     cursor.execute(create_ddatum_sql)
 conn_nws.commit()
 
+
+create_dim_sql = readSQLFile(Path("SQL/02_create_dimtables.sql"))
+
+with conn_nws.cursor() as cursor:
+    cursor.execute(create_dim_sql)
+conn_nws.commit()
 
 conn_nws.close()
 
