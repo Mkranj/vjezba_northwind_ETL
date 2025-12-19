@@ -62,6 +62,15 @@ with conn_nws.cursor() as cursor:
     cursor.execute(create_dim_sql)
 conn_nws.commit()
 
+# Kreiranje i punjenje činjenične tablice ----
+
+
+create_fact_sql = readSQLFile(Path("SQL/03_create_fProdajaProizvod.sql"))
+
+with conn_nws.cursor() as cursor:
+    cursor.execute(create_fact_sql)
+conn_nws.commit()
+
 conn_nws.close()
 
 print("ETL complete")
