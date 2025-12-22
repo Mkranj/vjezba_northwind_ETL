@@ -2,7 +2,6 @@
 
 CREATE TABLE fProdajaProizvod (
     sifProdajaProizvod INT PRIMARY KEY IDENTITY (1, 1) NOT NULL,
-    fOrderID INT NOT NULL,
     sifProizvod INT NOT NULL, 
     sifDatumProdaja INT NOT NULL,
     sifMjestoProdano INT NOT NULL,
@@ -33,7 +32,6 @@ ON fProdajaProizvod (sifZaposlenik);
 WITH prodani_proizvodi AS (
     SELECT 
         OD.ProductID,
-        OD.OrderID,
         OD.UnitPrice,
         OD.Quantity,
         -- popust je postotak -> bolje nam je IZNOS popusta spremati, smislenija kao mjera. Pa postotak možemo po potrebi računati u upitima
@@ -48,11 +46,10 @@ WITH prodani_proizvodi AS (
     ON OD.OrderID = Ord.OrderID
 ) 
 INSERT INTO fProdajaProizvod 
-    (fOrderID, sifProizvod, sifDatumProdaja,
+    (sifProizvod, sifDatumProdaja,
     sifMjestoProdano, sifZaposlenik,
     komad, cijena, popust, prihod)
 SELECT
-    prodani_proizvodi.OrderID, 
     proizvod.sifProizvod,
     datProdaja.sifDatum AS sifDatumProdaja,
     mjestProdano.sifMjesto AS sifMjestoProdano,
