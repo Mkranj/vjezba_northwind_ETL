@@ -5,7 +5,6 @@ CREATE TABLE fProdajaProizvod (
     fOrderID INT NOT NULL,
     sifProizvod INT NOT NULL, 
     sifDatumProdaja INT NOT NULL,
-    sifMjestoDobavljen INT NOT NULL,
     sifMjestoProdano INT NOT NULL,
     sifZaposlenik INT NOT NULL,
     komad INT NOT NULL,
@@ -15,7 +14,6 @@ CREATE TABLE fProdajaProizvod (
     
     CONSTRAINT fk_sifProizvod FOREIGN KEY (sifProizvod) REFERENCES dProizvod (sifProizvod),
     CONSTRAINT fk_sifDatumProdaja FOREIGN KEY (sifDatumProdaja) REFERENCES dDatum (sifDatum),
-    CONSTRAINT fk_sifMjestoDobavljen FOREIGN KEY (sifMjestoDobavljen) REFERENCES dMjesto (sifMjesto),
     CONSTRAINT fk_sifMjestoProdano FOREIGN KEY (sifMjestoProdano) REFERENCES dMjesto (sifMjesto),
     CONSTRAINT fk_sifZaposlenik FOREIGN KEY (sifZaposlenik) REFERENCES dZaposlenik (sifZaposlenik)
 );
@@ -25,8 +23,6 @@ CREATE INDEX fProdajaProizvod_proizvod
 ON fProdajaProizvod (sifProizvod);
 CREATE INDEX fProdajaProizvod_datumProdaja
 ON fProdajaProizvod (sifDatumProdaja);
-CREATE INDEX fProdajaProizvod_mjestoDobavljen
-ON fProdajaProizvod (sifMjestoDobavljen);
 CREATE INDEX fProdajaProizvod_mjestoProdano
 ON fProdajaProizvod (sifMjestoProdano);
 CREATE INDEX fProdajaProizvod_zaposlenik
@@ -46,25 +42,19 @@ WITH prodani_proizvodi AS (
         (OD.Quantity * (OD.UnitPrice - (OD.UnitPrice * OD.Discount)) ) AS totalIncome,
         Ord.EmployeeID,
         CAST(Ord.OrderDate AS DATE) AS OrderDate,
-        Ord.ShipCity AS ShipCity,
-        Suppliers.City AS SupplierCity
+        Ord.ShipCity AS ShipCity
     FROM [northwind].[dbo].[Order Details] AS OD
     LEFT JOIN northwind.dbo.Orders AS Ord
     ON OD.OrderID = Ord.OrderID
-    LEFT JOIN northwind.dbo.Products
-    ON OD.ProductID = Products.ProductID
-    LEFT JOIN northwind.dbo.Suppliers
-    ON Products.SupplierID = Suppliers.SupplierID
 ) 
 INSERT INTO fProdajaProizvod 
-    (fOrderID, sifProizvod, sifDatumProdaja, sifMjestoDobavljen,
+    (fOrderID, sifProizvod, sifDatumProdaja,
     sifMjestoProdano, sifZaposlenik,
     komad, cijena, popust, prihod)
 SELECT
     prodani_proizvodi.OrderID, 
     proizvod.sifProizvod,
     datProdaja.sifDatum AS sifDatumProdaja,
-    mjestDobavljen.sifMjesto AS sifMjestoDobavljen,
     mjestProdano.sifMjesto AS sifMjestoProdano,
     zaposlenik.sifzaposlenik AS sifZaposlenik,
     Quantity AS komad,
@@ -76,8 +66,6 @@ LEFT JOIN dProizvod AS proizvod
 ON prodani_proizvodi.ProductID = proizvod.fProductID
 LEFT JOIN dDatum AS datProdaja
 ON prodani_proizvodi.OrderDate = datProdaja.datum
-LEFT JOIN dMjesto AS mjestDobavljen 
-ON prodani_proizvodi.SupplierCity = mjestDobavljen.imeGrad
 LEFT JOIN dMjesto AS mjestProdano
 ON prodani_proizvodi.ShipCity = mjestProdano.imeGrad
 LEFT JOIN dZaposlenik AS zaposlenik

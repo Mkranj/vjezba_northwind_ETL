@@ -13,8 +13,15 @@ CREATE TABLE dProizvod (
     fProductID INT NOT NULL,
     imeProizvod VARCHAR(100) NOT NULL,
     sifKategorija INT NOT NULL,
-    imeKategorija VARCHAR(100) NOT NULL
+    imeKategorija VARCHAR(100) NOT NULL,
+    sifMjestoDobavljen INT NOT NULL,
+    
+    CONSTRAINT fk_sifMjestoDobavljen FOREIGN KEY (sifMjestoDobavljen) REFERENCES dMjesto (sifMjesto)
 );
+
+
+CREATE INDEX dProizvod_mjestoDobavljen
+ON dProizvod (sifMjestoDobavljen);
 
 -- RESEARCH: indeksi za ključeve iz originalne baze? Rekao bih ne jer to ubrzava samo ETL, ne i korištenje
 
@@ -52,19 +59,26 @@ INSERT INTO dMjesto (imeGrad, imeDrzava)
 SELECT City, Country
 FROM mjesta;
 
+--
+
 
 WITH proizvodi AS (
-    SELECT DISTINCT
+    SELECT
         prod.ProductID AS fProductID,
-        ProductName AS imeProizvod,
+        prod.ProductName AS imeProizvod,
         prod.CategoryID AS sifKategorija,
-        CategoryName AS imeKategorija 
+        CategoryName AS imeKategorija,
+        mjestDobavljen.sifMjesto AS sifMjestoDobavljen
     FROM northwind.dbo.Products AS prod
     JOIN  northwind.dbo.Categories AS kat
     ON prod.CategoryID = kat.CategoryID
+    LEFT JOIN northwind.dbo.Suppliers AS supplier
+    ON prod.SupplierID = supplier.SupplierID
+    LEFT JOIN dMjesto AS mjestDobavljen 
+    ON supplier.City = mjestDobavljen.imeGrad
 )
-INSERT INTO dProizvod (fProductID, imeProizvod, sifKategorija, imeKategorija)
-SELECT fProductID, imeProizvod, sifKategorija, imeKategorija
+INSERT INTO dProizvod (fProductID, imeProizvod, sifKategorija, imeKategorija, sifMjestoDobavljen)
+SELECT fProductID, imeProizvod, sifKategorija, imeKategorija, sifMjestoDobavljen
 FROM proizvodi;
 
 WITH zaposlenici AS (
