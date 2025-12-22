@@ -1,3 +1,5 @@
+-- koji zaposlenici daju najveće popuste krajem tjedna
+
 SELECT 
         --dzaposlenik.sifzaposlenik,
         CONCAT(dzaposlenik.imezaposlenik, ' ', dzaposlenik.prezimezaposlenik) AS zaposlenik,

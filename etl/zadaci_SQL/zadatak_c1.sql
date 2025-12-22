@@ -1,3 +1,5 @@
+--usporedba ukupnih prihoda po kategorijama proizvoda prodanih u 2017. godini, po kontinentima
+
 SELECT 
         imeKategorija,
         SUM(prihod) AS prihodi

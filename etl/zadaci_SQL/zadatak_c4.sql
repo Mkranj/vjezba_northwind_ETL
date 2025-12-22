@@ -1,3 +1,5 @@
+--usporedba ukupnih prihoda u 2017 godini u odnosu na državu u kojoj je zaposlenik
+
 SELECT 
        zaposlenikMjesto.imedrzava,
        SUM(prihod) AS prihodi

@@ -1,3 +1,5 @@
+--broj proizvoda koji su dobavljeni iz iste države u kojoj su i prodani u 2018. godini, prema državama
+
 SELECT 
         dobava.Imedrzava,
         SUM(komad) AS broj_proizvoda

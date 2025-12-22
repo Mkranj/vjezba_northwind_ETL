@@ -1,3 +1,5 @@
+-- top lista prodanih mliječnih proizvoda tijekom zime
+
 SELECT 
         dproizvod.imeproizvod,
         SUM(prihod) AS prihodi
