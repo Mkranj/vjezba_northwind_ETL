@@ -4,7 +4,9 @@ SELECT
         --dzaposlenik.sifzaposlenik,
         CONCAT(dzaposlenik.imezaposlenik, ' ', dzaposlenik.prezimezaposlenik) AS zaposlenik,
         AVG(popust) AS prosjecni_popust,
-        MAX(popust) AS najveci_popust
+        MAX(popust) AS najveci_popust,
+        AVG(popust/cijena) AS prosjecni_popust_posto,
+        MAX(popust/cijena) AS najveci_popust_posto
 FROM fProdajaProizvod
 JOIN dDatum
 ON fprodajaproizvod.sifdatumprodaja = ddatum.sifdatum

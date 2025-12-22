@@ -40,9 +40,10 @@ WITH prodani_proizvodi AS (
         OD.OrderID,
         OD.UnitPrice,
         OD.Quantity,
-        OD.Discount,
+        -- popust je postotak -> bolje nam je IZNOS popusta spremati, smislenija kao mjera. Pa postotak možemo po potrebi računati u upitima
+        (OD.UnitPrice * OD.Discount) AS Discount,
         -- ukupni prihod - količina * snižena cijena
-        (OD.Quantity * OD.UnitPrice * (1 - OD.Discount)) AS totalIncome,
+        (OD.Quantity * (OD.UnitPrice - (OD.UnitPrice * OD.Discount)) ) AS totalIncome,
         Ord.EmployeeID,
         CAST(Ord.OrderDate AS DATE) AS OrderDate,
         Ord.ShipCity AS ShipCity,
