@@ -11,7 +11,13 @@ CREATE TABLE fProdajaProizvod (
     komad INT NOT NULL,
     cijena DECIMAL(20, 3) NOT NULL,
     popust DECIMAL(20, 3) NOT NULL,
-    prihod DECIMAL(20, 3) NOT NULL
+    prihod DECIMAL(20, 3) NOT NULL,
+    
+    CONSTRAINT fk_sifProizvod FOREIGN KEY (sifProizvod) REFERENCES dProizvod (sifProizvod),
+    CONSTRAINT fk_sifDatumProdaja FOREIGN KEY (sifDatumProdaja) REFERENCES dDatum (sifDatum),
+    CONSTRAINT fk_sifMjestoDobavljen FOREIGN KEY (sifMjestoDobavljen) REFERENCES dMjesto (sifMjesto),
+    CONSTRAINT fk_sifMjestoProdano FOREIGN KEY (sifMjestoProdano) REFERENCES dMjesto (sifMjesto),
+    CONSTRAINT fk_sifZaposlenik FOREIGN KEY (sifZaposlenik) REFERENCES dZaposlenik (sifZaposlenik)
 );
 
 
