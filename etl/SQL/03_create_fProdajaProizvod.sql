@@ -46,11 +46,7 @@ INSERT INTO fProdajaProizvod
 SELECT
     prodani_proizvodi.OrderID, 
     proizvod.sifProizvod,
-    CASE
-    WHEN datProdaja.sifDatum IS NULL
-    THEN (SELECT sifDatum FROM dDatum WHERE datum = '0001-01-01')
-    ELSE datProdaja.sifDatum
-    END AS sifDatumProdaja,
+    datProdaja.sifDatum AS sifDatumProdaja,
     mjestDobavljen.sifMjesto AS sifMjestoDobavljen,
     mjestProdano.sifMjesto AS sifMjestoProdano,
     zaposlenik.sifzaposlenik AS sifZaposlenik,
@@ -68,4 +64,10 @@ ON prodani_proizvodi.SupplierCity = mjestDobavljen.imeGrad
 LEFT JOIN dMjesto AS mjestProdano
 ON prodani_proizvodi.ShipCity = mjestProdano.imeGrad
 LEFT JOIN dZaposlenik AS zaposlenik
-ON prodani_proizvodi.EmployeeID = zaposlenik.fEmployeeID
+ON prodani_proizvodi.EmployeeID = zaposlenik.fEmployeeID;
+
+/*Zamjena NULL vrijednosti posebnim zapisima*/
+
+UPDATE fProdajaProizvod
+SET sifDatumProdaja = (SELECT sifdatum FROM dDatum WHERE datum = '0001-01-01')
+WHERE sifDatumProdaja IS NULL;
