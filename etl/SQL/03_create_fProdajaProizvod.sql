@@ -1,7 +1,7 @@
 -- Izrada glavne činjenične tablice
 
 CREATE TABLE fProdajaProizvod (
-    sifProdajaProizvod INT IDENTITY (1, 1) NOT NULL,
+    sifProdajaProizvod INT PRIMARY KEY IDENTITY (1, 1) NOT NULL,
     fOrderID INT NOT NULL,
     sifProizvod INT NOT NULL, 
     sifDatumProdaja INT NOT NULL,

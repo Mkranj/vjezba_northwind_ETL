@@ -1,14 +1,14 @@
 -- Izrada tablice za mjesta dobavljanja, kupca
 
 CREATE TABLE dMjesto (
-    sifMjesto INT IDENTITY (1, 1) NOT NULL ,
+    sifMjesto INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
     imeGrad VARCHAR(100) NOT NULL,
     imeDrzava VARCHAR(100) NOT NULL
 );
 
 
 CREATE TABLE dProizvod (
-    sifProizvod INT IDENTITY (1, 1) NOT NULL ,
+    sifProizvod INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
     -- originalna šifra - za spajanje pri punjenju činjeničnih
     fProductID INT NOT NULL,
     imeProizvod VARCHAR(100) NOT NULL,
@@ -17,12 +17,14 @@ CREATE TABLE dProizvod (
 );
 
 CREATE TABLE dZaposlenik (
-    sifZaposlenik INT IDENTITY (1, 1) NOT NULL ,
+    sifZaposlenik INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
     -- originalna šifra - za spajanje pri punjenju činjeničnih
     fEmployeeID INT NOT NULL,
     imeZaposlenik VARCHAR(100) NOT NULL,
     prezimeZaposlenik VARCHAR(100) NOT NULL,
     sifMjestoZaposlenik INT NOT NULL,
+
+    CONSTRAINT fk_sifMjestoZaposlenik FOREIGN KEY (sifMjestoZaposlenik) REFERENCES dMjesto (sifMjesto)
 );
 
 --- Punjenje dimenzijskih tablica

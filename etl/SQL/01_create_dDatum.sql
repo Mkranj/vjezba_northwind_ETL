@@ -4,7 +4,7 @@ Osnovna dimenzijska tablica su datumi, napraviti tablicu od najranijeg do najkas
 SET DATEFIRST 1; -- ponedjeljak prvi dan u tjednu
 
 CREATE TABLE dDatum (
-    sifDatum INT IDENTITY (1, 1) NOT NULL ,
+    sifDatum INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
     datum DATE,
     dan SMALLINT,
     mjesec SMALLINT,
