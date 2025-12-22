@@ -16,6 +16,8 @@ CREATE TABLE dProizvod (
     imeKategorija VARCHAR(100) NOT NULL
 );
 
+-- RESEARCH: indeksi za ključeve iz originalne baze? Rekao bih ne jer to ubrzava samo ETL, ne i korištenje
+
 CREATE TABLE dZaposlenik (
     sifZaposlenik INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
     -- originalna šifra - za spajanje pri punjenju činjeničnih
@@ -26,6 +28,9 @@ CREATE TABLE dZaposlenik (
 
     CONSTRAINT fk_sifMjestoZaposlenik FOREIGN KEY (sifMjestoZaposlenik) REFERENCES dMjesto (sifMjesto)
 );
+
+CREATE INDEX dZaposlenik_mjestoZaposlenik
+ON dZaposlenik (sifMjestoZaposlenik);
 
 --- Punjenje dimenzijskih tablica
 

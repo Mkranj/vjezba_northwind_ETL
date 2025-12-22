@@ -15,6 +15,12 @@ CREATE TABLE dDatum (
     dobaGodine SMALLINT
 );
 
+CREATE UNIQUE INDEX dDatum_datum
+ON dDatum (datum);
+
+CREATE INDEX dDatum_mjesecgod
+ON dDatum (godina, mjesec);
+
 /*Umetanje posebnih vrijednosti koje služe kao NULL*/
 
 -- SQL Serveru važno da se koriste jednostruki navodnici za stringove!

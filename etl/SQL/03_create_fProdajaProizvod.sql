@@ -21,6 +21,16 @@ CREATE TABLE fProdajaProizvod (
 );
 
 
+CREATE INDEX fProdajaProizvod_proizvod
+ON fProdajaProizvod (sifProizvod);
+CREATE INDEX fProdajaProizvod_datumProdaja
+ON fProdajaProizvod (sifDatumProdaja);
+CREATE INDEX fProdajaProizvod_mjestoDobavljen
+ON fProdajaProizvod (sifMjestoDobavljen);
+CREATE INDEX fProdajaProizvod_mjestoProdano
+ON fProdajaProizvod (sifMjestoProdano);
+CREATE INDEX fProdajaProizvod_zaposlenik
+ON fProdajaProizvod (sifZaposlenik);
 
 -- punjenje tablice
 
