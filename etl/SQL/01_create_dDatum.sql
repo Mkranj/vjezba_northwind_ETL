@@ -15,6 +15,12 @@ CREATE TABLE dDatum (
     dobaGodine SMALLINT
 );
 
+/*Umetanje posebnih vrijednosti koje služe kao NULL*/
+
+-- SQL Serveru važno da se koriste jednostruki navodnici za stringove!
+INSERT INTO dDatum (datum, dan, mjesec, godina, danUTjednu, vikend, dobaGodine)
+VALUES('0001-01-01', NULL, NULL, NULL, NULL, NULL, NULL);
+
 /*Kao početni datum uzimamo najraniji datum iz Orders, Orderdate*/
 
 DECLARE @StartDate date = (SELECT CAST((MIN(OrderDate)) AS DATE)

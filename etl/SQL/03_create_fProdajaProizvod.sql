@@ -46,7 +46,11 @@ INSERT INTO fProdajaProizvod
 SELECT
     prodani_proizvodi.OrderID, 
     proizvod.sifProizvod,
-    datProdaja.sifDatum AS sifDatumProdaja,
+    CASE
+    WHEN datProdaja.sifDatum IS NULL
+    THEN (SELECT sifDatum FROM dDatum WHERE datum = '0001-01-01')
+    ELSE datProdaja.sifDatum
+    END AS sifDatumProdaja,
     mjestDobavljen.sifMjesto AS sifMjestoDobavljen,
     mjestProdano.sifMjesto AS sifMjestoProdano,
     zaposlenik.sifzaposlenik AS sifZaposlenik,
