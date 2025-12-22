@@ -6,8 +6,10 @@ SELECT
 FROM fProdajaProizvod
 JOIN dDatum
 ON fprodajaproizvod.sifdatumprodaja = ddatum.sifdatum
+JOIN dproizvod AS proizvod
+ON fprodajaproizvod.sifproizvod = proizvod.sifproizvod
 JOIN dmjesto AS dobava
-ON fprodajaproizvod.sifmjestodobavljen = dobava.sifmjesto
+ON proizvod.sifmjestodobavljen = dobava.sifmjesto
 JOIN dmjesto AS prodano
 ON fprodajaproizvod.sifmjestoprodano = dobava.sifmjesto
 WHERE ddatum.godina = 1997
