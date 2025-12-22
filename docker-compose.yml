@@ -15,6 +15,7 @@ services:
 
   etl:
     build: ./etl
+    container_name: ETL
     environment:
       SA_PASSWORD: CHANGEpass1!
     depends_on:

@@ -8,3 +8,5 @@ JOIN dproizvod
 ON fprodajaproizvod.sifproizvod = dproizvod.sifproizvod
 WHERE ddatum.godina = 1997
 GROUP BY imeKategorija;
+
+-- NEMAMO info o kontinentima, pa su izostavljeni!
