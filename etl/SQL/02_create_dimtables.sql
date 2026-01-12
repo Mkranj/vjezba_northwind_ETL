@@ -1,11 +1,4 @@
--- Izrada tablice za mjesta dobavljanja, kupca
-
-CREATE TABLE dMjesto (
-    sifMjesto INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
-    imeGrad VARCHAR(100) NOT NULL,
-    imeDrzava VARCHAR(100) NOT NULL
-);
-
+-- Izrada tablica za info o proizvodima, zaposlenicima i kupcima
 
 CREATE TABLE dProizvod (
     sifProizvod INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
@@ -14,16 +7,15 @@ CREATE TABLE dProizvod (
     imeProizvod VARCHAR(100) NOT NULL,
     sifKategorija INT NOT NULL,
     imeKategorija VARCHAR(100) NOT NULL,
-    sifMjestoDobavljen INT NOT NULL,
-    
-    CONSTRAINT fk_sifMjestoDobavljen FOREIGN KEY (sifMjestoDobavljen) REFERENCES dMjesto (sifMjesto)
+    gradDobavljen VARCHAR(100) NOT NULL,
+    drzavaDobavljen VARCHAR(100) NOT NULL
 );
 
 
-CREATE INDEX dProizvod_mjestoDobavljen
-ON dProizvod (sifMjestoDobavljen);
-
--- RESEARCH: indeksi za ključeve iz originalne baze? Rekao bih ne jer to ubrzava samo ETL, ne i korištenje
+CREATE INDEX dProizvod_gradDobavljen
+ON dProizvod (gradDobavljen);
+CREATE INDEX dProizvod_drzavaDobavljen
+ON dProizvod (drzavaDobavljen);
 
 CREATE TABLE dZaposlenik (
     sifZaposlenik INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
@@ -31,36 +23,31 @@ CREATE TABLE dZaposlenik (
     fEmployeeID INT NOT NULL,
     imeZaposlenik VARCHAR(100) NOT NULL,
     prezimeZaposlenik VARCHAR(100) NOT NULL,
-    sifMjestoZaposlenik INT NOT NULL,
-
-    CONSTRAINT fk_sifMjestoZaposlenik FOREIGN KEY (sifMjestoZaposlenik) REFERENCES dMjesto (sifMjesto)
+    gradZaposlenik VARCHAR(100) NOT NULL,
+    drzavaZaposlenik VARCHAR(100) NOT NULL
 );
 
-CREATE INDEX dZaposlenik_mjestoZaposlenik
-ON dZaposlenik (sifMjestoZaposlenik);
+CREATE INDEX dZaposlenik_gradZaposlenik
+ON dZaposlenik (gradZaposlenik);
+CREATE INDEX dZaposlenik_drzavaZaposlenik
+ON dZaposlenik (drzavaZaposlenik);
+
+
+CREATE TABLE dKupac (
+    sifKupac INT PRIMARY KEY IDENTITY (1, 1) NOT NULL ,
+    -- originalna šifra - za spajanje pri punjenju činjeničnih
+    fCustomerID VARCHAR(100) NOT NULL,
+    imeKupca VARCHAR(100) NOT NULL,
+    gradKupca VARCHAR(100) NOT NULL,
+    drzavaKupca VARCHAR(100) NOT NULL
+);
+
+CREATE INDEX dKupac_gradKupca
+ON dKupac (gradKupca);
+CREATE INDEX dZaposlenik_drzavaKupca
+ON dKupac (drzavaKupca);
 
 --- Punjenje dimenzijskih tablica
-
-WITH mjesta AS (
-    SELECT DISTINCT 
-    ShipCity AS City, ShipCountry AS Country
-    FROM northwind.dbo.Orders
-    -- kod zaposlenika ima dodatnih gradova
-    UNION
-    SELECT DISTINCT
-        City, Country
-    FROM northwind.dbo.Employees
-    UNION
-    SELECT DISTINCT
-        City, Country
-    FROM northwind.dbo.Suppliers
-)
-INSERT INTO dMjesto (imeGrad, imeDrzava)
-SELECT City, Country
-FROM mjesta;
-
---
-
 
 WITH proizvodi AS (
     SELECT
@@ -68,17 +55,16 @@ WITH proizvodi AS (
         prod.ProductName AS imeProizvod,
         prod.CategoryID AS sifKategorija,
         CategoryName AS imeKategorija,
-        mjestDobavljen.sifMjesto AS sifMjestoDobavljen
+        supplier.City AS grad,
+        supplier.Country AS drzava
     FROM northwind.dbo.Products AS prod
     JOIN  northwind.dbo.Categories AS kat
     ON prod.CategoryID = kat.CategoryID
     LEFT JOIN northwind.dbo.Suppliers AS supplier
     ON prod.SupplierID = supplier.SupplierID
-    LEFT JOIN dMjesto AS mjestDobavljen 
-    ON supplier.City = mjestDobavljen.imeGrad
 )
-INSERT INTO dProizvod (fProductID, imeProizvod, sifKategorija, imeKategorija, sifMjestoDobavljen)
-SELECT fProductID, imeProizvod, sifKategorija, imeKategorija, sifMjestoDobavljen
+INSERT INTO dProizvod (fProductID, imeProizvod, sifKategorija, imeKategorija, gradDobavljen, drzavaDobavljen)
+SELECT fProductID, imeProizvod, sifKategorija, imeKategorija, grad, drzava
 FROM proizvodi;
 
 WITH zaposlenici AS (
@@ -86,11 +72,23 @@ WITH zaposlenici AS (
         EmployeeID AS fEmployeeID,
         FirstName AS imeZaposlenik,
         LastName AS prezimeZaposlenik,
-        dmj.sifMjesto AS sifMjestoZaposlenik
+        emp.City AS grad,
+        emp.Country AS drzava
     FROM northwind.dbo.Employees AS emp
-    LEFT JOIN dMjesto AS dmj 
-    ON emp.City = dmj.imeGrad
 )
-INSERT INTO dZaposlenik (fEmployeeID, imeZaposlenik, prezimeZaposlenik, sifMjestoZaposlenik)
-SELECT fEmployeeID, imeZaposlenik, prezimeZaposlenik, sifMjestoZaposlenik
+INSERT INTO dZaposlenik (fEmployeeID, imeZaposlenik, prezimeZaposlenik, gradZaposlenik, drzavaZaposlenik)
+SELECT fEmployeeID, imeZaposlenik, prezimeZaposlenik, grad, drzava
 FROM zaposlenici;
+
+
+WITH kupci AS (
+    SELECT
+        cust.CustomerID AS CustomerID,
+        cust.ContactName AS ContactName,
+        cust.City AS grad,
+        cust.Country AS drzava
+    FROM northwind.dbo.Customers AS cust
+)
+INSERT INTO dKupac (fCustomerID, imeKupca, gradKupca, drzavaKupca)
+SELECT CustomerID, ContactName, grad, drzava
+FROM kupci;
