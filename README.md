@@ -15,6 +15,9 @@ postupak numeriran je i nalazi se u folderu `etl/SQL/`.
 Nakon što je baza napravljena i ETL dovršen, možemo se spojiti na server i bazu skladišta, *nw_skladiste_staging*.  
 Tada se na njoj mogu vrtiti rješenja zadataka pomoću upita u folderu `etl/zadaci_SQL`.  
 
-Razlike od originalnih zadatak:  
+Napravljena je i skripta `/etl/zadaci_SQL/pokreni_rjesenja.py` pomoću koje se preko Pythona mogu pokrenuti upiti na skladište podataka koje se vrti u Docker containeru. Potrebno je Pythonu podesiti env varijablu SA_PASSWORD pri pokretanju skripte, tako da je naredba:  
+`SA_PASSWORD='CHANGEpass1!' python ./etl/zadaci_SQL/pokreni_rjesenja.py`
+
+Razlike od originalnih zadataka:  
 U korištenoj northwind bazi postoje podaci samo za narudžbe od 1996 do 1998, pa su rješenja prilagođena tim godinama umjesto npr. 2017.  
 U ovoj NW bazi nema eksplicitnih podataka o kontinentima kojima države pripadaju, pa nisu uključeni u rješenja (zadatak 1).
